@@ -67,6 +67,7 @@ template <class... Args>
 class CSVParser
 {
 private:
+	int string_num = 1;
 	typedef struct config
 	{
 		char sep_row;
@@ -119,7 +120,28 @@ private:
 
 		std::vector<std::string> vec;
 		for (int i = 0; i < sizeof...(Args); i++)
-			vec.push_back(fun());
+		{
+			try
+			{
+				vec.push_back(fun());
+				
+			}
+			catch (std::exception e)
+			{
+				std::stringstream ss;
+				ss << e.what() << ". Error on line: " << string_num<<", collumn: "<<i+1;
+				std::string err = ss.str();
+				throw err;
+			}
+		}
+			
+		if (symb != cnf.sep_row)
+		{
+			std::stringstream ss;
+			ss << "Not valid csv file. Error on line: " << string_num << ", column: " << sizeof...(Args);
+			throw ss.str();
+		}
+			
 
 
 		auto foo = [&vec]()->std::string {std::string s = vec.back(); vec.pop_back(); return s; };
@@ -160,6 +182,7 @@ public:
 			throw std::exception("File not found");
 		for (int i = -1; i < code; i++)
 			buff=parser();
+		string_num += 1;
 	}
 
 
@@ -174,6 +197,7 @@ public:
 		}
 			
 		buff = parser();
+		string_num += 1;
 	}
 	bool valid()
 	{
