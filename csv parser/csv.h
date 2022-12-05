@@ -79,7 +79,7 @@ private:
 	std::tuple<Args...> parser()
 	{
 		char symb = cnf.sep_column - 1;
-		auto fun = [&]() -> std::string {
+		auto get_data = [&]() -> std::string {
 			if (symb == cnf.sep_row || file.eof())    // попытка чтения после делителя строк или конца файла
 				throw std::exception("Not valid csv file");
 
@@ -123,7 +123,7 @@ private:
 		{
 			try
 			{
-				vec.push_back(fun());
+				vec.push_back(get_data());
 				
 			}
 			catch (std::exception e)
@@ -144,9 +144,9 @@ private:
 			
 
 
-		auto foo = [&vec]()->std::string {std::string s = vec.back(); vec.pop_back(); return s; };
+		auto flip = [&vec]()->std::string {std::string s = vec.back(); vec.pop_back(); return s; };
 
-		return std::tuple<Args...>(argpars<Args>(foo())...);
+		return std::tuple<Args...>(argpars<Args>(flip())...);
 	}
 
 public:
