@@ -18,10 +18,12 @@ Type argpars(std::string str)
 	std::stringstream buff;
 	buff << str;
 	buff >> arg;
-	buff.clear();
-	buff << arg;
-	if (buff!=str)
-		throw std::exception("Not valid argument");//Nothing changed
+	std::string buff2;
+	buff2 = str;
+	str.clear();
+	std::getline(buff, str);
+	if (str == buff2) //Nothing changed
+		throw std::exception("Not valid argument");
 	return arg;
 }
 
